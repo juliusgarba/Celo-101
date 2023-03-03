@@ -1,6 +1,8 @@
 
 # How to build a Tipping System using Solidity on the Celo Blockchain
 
+_Estimated reading time: **20 Minutes**_
+
 ## Table of Content
 - [Introduction](#introduction)
   * [What is a blockchain?](#what-is-a-blockchain-)
@@ -272,7 +274,7 @@ We will now break down the smart contract code into small snippets and explain t
 pragma solidity ^0.8.0;
 ```
 
-The first two lines of our code we specified the license that our code is guided by. This license is a very important aspect of our Solidity smart contract. Without the license, our Solidity code will not compile. Before we go further, let me give you short story of why Solidity requires that we add this license file to our smart contract code.
+In the first two lines of our code we specified the license that our code is guided by. This license is a very important aspect of our Solidity smart contract. Without the license, our Solidity code will not compile. Before we go further, let me give you short story of why Solidity requires that we add this license file to our smart contract code.
 
 > _In the early days of smart contract development where all the projects were required to make their project's code opensource. Many companies abide by this law and uploaded all their code to opensource platforms like Github for the whole world to see and verify that the code does what they told you. But it didn't take long before some geeks started taking advantage of this move. A typical example is the Uniswap protocol. People discovered that Uniswap is making a lot of money, so they decided to clone Uniswap code and build their own version of Uniswap thereby creating a competition for Uniswap. I won't mention names but you have probably heard of projects like Pancakeswap, Sushiswap, etc_
 
@@ -322,7 +324,9 @@ For the code above, we first created a variable - `deployer`, which will hold th
 
 We also created two other mappings - `purses` and `deposites`. `purses` mapping maps an ID to a `Purse` data (Remember the `Purse` struct we created earlier). So each purse created has a unique ID it can be queried with. The `deposits` mapping is also similar to the `purse` mapping. The only difference is that is keeps track of all deposits made by the customers and it maps a `uint` to a `Deposit` type.
 
-We then created 3 more variables - `id`, `depositsCounter`, and `cashOutInterval`. `id` is the variable that assigns ID to all `Purse`s created (remember that `purses` mapping maps and ID to a `Purse`). `depositsCounter` is the variable that keeps track of the total deposits made. It can use used to query for all the deposits made to the contract. Notice the difference between the `id` and `depositCounter` variable? I did that intentionally to show you the concept of default values. The value of `depositCounter` is initialized to zero by default, so we can omit the zero assignment to `id` and everything will still work fine. We also have a variable to keep track of the interval between when a staff can made a withdrawal. We are using 30 days here to simulate the salary system. Solidity offers suffixes like `minutes`, `hours`, `days`, etc that you can use in your code directly. All of them evaluates to seconds. Refer to the list below to see all the suffixes.
+We then created 3 more variables - `id`, `depositsCounter`, and `cashOutInterval`. `id` is the variable that assigns ID to all `Purse`s created (remember that `purses` mapping maps and ID to a `Purse`). `depositsCounter` is the variable that keeps track of the total deposits made. It can use used to query for all the deposits made to the contract. Notice the difference between the `id` and `depositCounter` variable? I did that intentionally to show you the concept of default values. The value of `depositCounter` is initialized to zero by default, so we can omit the zero assignment to `id` and everything will still work fine. 
+
+We also have a variable to keep track of the interval between when a staff can made a withdrawal. We are using 30 days here to simulate the salary system. Solidity offers suffixes like `minutes`, `hours`, `days`, etc that you can use in your code directly. All of them evaluates to seconds. Refer to the list below to see all the suffixes.
 
 
 - `1 == 1 seconds`
@@ -552,9 +556,9 @@ In order to deploy the contract code to the blockchain, we will need to install 
 Click on the extensions section and search for Celo, click on activate and it will be added to Remix. Now click on it from the left menu to open it.
 
 #### Deploying code to Celo blockchain
-Once the extension is open, ensure your wallet is connected by clicking on the connect button at the top right. 
-Ensure that the contract has been compiled, then click on the **Deploy** button to deploy the contract to the Celo blockchain.
-After it is done deploying, the newly created address will display next to the button.
+- Once the extension is open, ensure your wallet is connected by clicking on the connect button at the top right. 
+- Ensure that the contract has been compiled, then click on the **Deploy** button to deploy the contract to the Celo blockchain.
+- After it is done deploying, the newly created address will display next to the button.
 
 Remix will also create an interface where you can interact with the contract you just deployed.
 
@@ -567,3 +571,7 @@ This tutorial teaches you how to write smart contracts with solidity and how to 
 
 ## Reference
 - [Celo docs](https://docs.celo.org)
+- [Celo Extension Wallet](https://chrome.google.com/webstore/detail/celoextensionwallet/kkilomkmpmkbdnfelcpgckmpcaemjcdh?hl=en)
+- [Remix IDE](https://remix.ethereum.org)
+- [Solidity Documentation](https://docs.soliditylang.org)
+- [Introduction to blockchain](https://dacade.org/communities/blockchain/courses/intro-to-blockchain)
