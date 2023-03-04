@@ -8,6 +8,8 @@ _Estimated reading time: **20 Minutes**_
   * [What is a blockchain?](#what-is-a-blockchain-)
   * [What is Solidity?](#what-is-solidity-)
   * [What is the Celo blockchain?](#what-is-the-celo-blockchain-)
+- [Prerequisites](#prerequisites)
+- [Requirements](#requirements)
 - [Writing the smart contract](#writing-the-smart-contract)
   * [What problem is our code solving?](#what-problem-is-our-code-solving-)
   * [Smart contract code](#smart-contract-code)
@@ -46,9 +48,19 @@ Solidity is a statically-typed programming language designed for developing smar
 ### What is the Celo blockchain?
 Celo is the carbon-negative, mobile-first, EVM-compatible blockchain ecosystem leading a thriving new digital economy for all. Celo blockchain is a platform designed to allow mobile users around the world to make simple financial transactions with cryptocurrency. The platform has its own blockchain and a native currency known as CELO.
 
-Now that you already know the basics of the blockchain, Solidity, and Celo, let's proceed to build a Tip System using Solidity smart contract.
+## Prerequisites
+- Fundamental knowledge of writing smart contracts with [Solidity](https://docs.soliditylang.org)
+- Experience using [Remix IDE](https://remix.ethereum.org)
+
+## Requirements
+- A working computer system
+- A web browser. E.g Brave, Chrome, Firefox
+- Internet connection
+
 
 ## Writing the smart contract
+Now that you already know the basics of the blockchain, Solidity, and Celo, let's proceed to build a Tip System using Solidity smart contract.
+
 ### What problem is our code solving?
 We are building a system that allows organizations to properly manage the tips offered to staff members by making it more transparent and open to all.
 Our smart contract will be able to do the following:
