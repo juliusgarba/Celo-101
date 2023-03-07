@@ -3,6 +3,27 @@
 ## Introduction 
 Hello there, welcome to my tutorial where we will be learning about creating a tipping system using blockchain technologies step by step. But before we proceed further, let me ask you this simple question:
 
+
+
+## Table of Content
+- [How to Build a Tipping System on the Celo Blockchain](#how-to-build-a-tipping-system-on-the-celo-blockchain)
+  - [Introduction](#introduction)
+  - [Table of Content](#table-of-content)
+    - [What is the Blockchain?](#what-is-the-blockchain)
+    - [What is Solidity?](#what-is-solidity)
+    - [What is the Celo blockchain?](#what-is-the-celo-blockchain)
+  - [Writing the Smart Contract](#writing-the-smart-contract)
+    - [What Problem is Our Code Solving?](#what-problem-is-our-code-solving)
+    - [Smart Contract Code](#smart-contract-code)
+  - [Deploying the Contract to the Blockchain](#deploying-the-contract-to-the-blockchain)
+    - [Why Are We Deploying It to the Celo Blockchain?](#why-are-we-deploying-it-to-the-celo-blockchain)
+    - [Using Remix](#using-remix)
+      - [Write and Compile Code](#write-and-compile-code)
+      - [Add Celo Plugin to Remix](#add-celo-plugin-to-remix)
+      - [Deploying to the Celo Blockchain](#deploying-to-the-celo-blockchain)
+  - [What Is the Way Forward?](#what-is-the-way-forward)
+  - [Conclusion](#conclusion)
+
 > _Have you ever gone to a restaurant where the staffs get their salary bonus from tips?_
 
 A tip is considered a monetary incentive that is given by the customer or guest for polite, prompt, and efficient service provided by a restaurant or hotel staff. Tipping staff is usually not mandatory but it is necessary to appreciate the service provided by staff.
@@ -522,35 +543,35 @@ We will add one last special function called a `fallback` function. This functio
     }
 ```
 
-## Deploying the contract to the blockchain
-After completing the contract code, the next step is to deploy it to the blockchain so that we can interract with it. We will be deploying it to the Celo blockchain from Remix.
+## Deploying the Contract to the Blockchain
+After completing the contract code, the next step is to deploy the smart contract to the blockchain so that we can interact with it. We will be deploying it to the Celo blockchain from Remix.
 
-### Why are we deploying it to Celo blockchain?
+### Why Are We Deploying It to the Celo Blockchain?
 - Celo blockchain is secured
 - It is scalable
-- It is interoprable i.e you can communicate with other blockchains
+- It is interoperable i.e you can communicate with other blockchains
 - It is easy to use.
 
 ### Using Remix
 Remix IDE, is a no-setup tool with a GUI for developing smart contracts. Used by experts and beginners alike, Remix will get you going in double time. Remix plays well with other tools, and allows for a simple deployment process to the chain of your choice. Remix is famous for its visual debugger.
 
-#### Write and compile code
-Click [here](https://remix.ethereum.org) to open Remix IDE in your browser. Inside the contracts folder, right click and select "New File". Save the file name as TipContract.sol. Inside the contract file, paste our code from above. Click on CTRL +S to save the code
+#### Write and Compile Code
+Click [here](https://remix.ethereum.org) to open Remix IDE in your browser. Inside the **contracts** folder, right-click and select "New File". Enter the file name as `TipContract.sol` and press **Enter** on your keyboard to save. Inside the contract file, paste our code from above. Press the **CTRL +S** keys on your keyboard to save the code.
 
-#### Add Celo Extension to Remix
-In order to deploy the contract code to the blockchain, we will need to insftall the Celo extension on Remix.
-Click on the extensions section and search for celo, click on activate and it will be added to remix. Now click on it from the left menu to open it.
+#### Add Celo Plugin to Remix
+To deploy the contract code to the blockchain, we will need to install the Celo plugin on Remix.
+Click on the **Plugin manager** section and search for the **CELO** plugin, click on **activate** and it will be added to Remix. Now click on it from the left menu to open it.
 
-#### Deploying code to Celo blockchain
-Once the extension is open, ensure your wallet is connected by clicking on the connect button at the top right. 
-Ensure that the contract has been compiled, then clickon the Deploy button to deploy the contract to the celo blockchain.
-After it is done deploying, the newly created address will display nect to the button.
+#### Deploying to the Celo Blockchain
+Once the CELO plugin page is open, ensure your wallet is connected by clicking on the **connect** button at the top left of your screen. 
+Ensure that the contract has been compiled, then click on the **Deploy** button to deploy the contract to the celo blockchain.
+After it is done deploying, the newly created address will be displayed next to the button.
 
 Remix will also create an interface where you can interact with the contract you just deployed.
 
-## What is the way forward?
-After you have sucessfully followed the steps above correctly and your contract is working as expected. The next step is to build a frontend that users can interact with. You can use Celo Extension Wallet to connect your code with the Celo blockchain. Challenge your self by adding more functionalities to the app, and even posting it on social media so friends can test it out.
+## What Is the Way Forward?
+After you have successfully followed the steps above correctly and your contract is working as expected. The next step is to build a front end that users can interact with. You can use the Celo Extension Wallet to connect your code with the Celo blockchain. Challenge yourself by adding more functionalities to the app, and even posting it on social media so friends can test it out.
 
 ## Conclusion
-This tutorial teaches you how to write smart contracts with solidity and how to deploy the contract to the Celo blockchain using Remix ide. We covered the basic concepts on solidity smart contracts needed to get you started with advanced concepts. Next time, we will be covering more advanced concept. Stay prepared!
+This tutorial taught you how to write smart contracts with Solidity and how to deploy the contract to the Celo blockchain using Remix IDE. We covered the basic concepts of Solidity and smart contracts to get you started with advanced concepts. Next time, we will be covering more advanced concepts. Stay tuned!
 
