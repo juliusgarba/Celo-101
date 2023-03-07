@@ -5,19 +5,19 @@ Hello there, welcome to my tutorial where we will be learning about creating a t
 
 
 
-## Table of Content
+### Table of Content
 - [How to Build a Tipping System on the Celo Blockchain](#how-to-build-a-tipping-system-on-the-celo-blockchain)
   - [Introduction](#introduction)
-  - [Table of Content](#table-of-content)
-    - [What is the Blockchain?](#what-is-the-blockchain)
-    - [What is Solidity?](#what-is-solidity)
-    - [What is the Celo blockchain?](#what-is-the-celo-blockchain)
+    - [Table of Content](#table-of-content)
+    - [What Is the Blockchain?](#what-is-the-blockchain)
+    - [What Is Solidity?](#what-is-solidity)
+    - [What Is the Celo Blockchain?](#what-is-the-celo-blockchain)
   - [Writing the Smart Contract](#writing-the-smart-contract)
-    - [What Problem is Our Code Solving?](#what-problem-is-our-code-solving)
+    - [What Problem Is Our Code Solving?](#what-problem-is-our-code-solving)
     - [Smart Contract Code](#smart-contract-code)
   - [Deploying the Contract to the Blockchain](#deploying-the-contract-to-the-blockchain)
     - [Why Are We Deploying It to the Celo Blockchain?](#why-are-we-deploying-it-to-the-celo-blockchain)
-    - [Using Remix](#using-remix)
+    - [Using Remix to Deploy the Smart Contract](#using-remix-to-deploy-the-smart-contract)
       - [Write and Compile Code](#write-and-compile-code)
       - [Add Celo Plugin to Remix](#add-celo-plugin-to-remix)
       - [Deploying to the Celo Blockchain](#deploying-to-the-celo-blockchain)
@@ -32,25 +32,25 @@ A tipping system can be made better by using blockchain technology to implement 
 
 For this tutorial, we want to build a tipping system on the Celo blockchain using a smart contract programming language called Solidity. But before we start building, let's know what the above terminologies mean.
 
-### What is the Blockchain?
+### What Is the Blockchain?
 The blockchain is a shared, immutable ledger that facilitates the process of recording transactions and tracking assets in a business network. An asset can be **tangible** (a house, car, cash, land) or **intangible** (intellectual property, patents, copyrights, branding). Virtually anything of value can be tracked and traded on a blockchain network, reducing risk and cutting costs for all involved. 
 
 
-### What is Solidity?
+### What Is Solidity?
 With the mention that Ethereum can be used to write smart contracts, we tend to corner our minds to the fact that there must be some programming language with which these applications are designed.
 Yes, there is a programming language that makes it possible. It goes by the name of ‘**Solidity**’.
 
 Solidity is an object-oriented and statically-typed programming language that was developed by the core contributors of the Ethereum platform. It is used to design and implement smart contracts that implement self-enforcing business logic within the Ethereum Virtual Machine and several other  EVM-compatible blockchain platforms like the Celo blockchain.
 
 
-### What is the Celo blockchain?
+### What Is the Celo Blockchain?
 Celo is the carbon-negative, mobile-first, EVM-compatible blockchain ecosystem leading a thriving new digital economy for all. The Celo blockchain is an ecosystem designed to allow mobile users around the world to make simple financial transactions with cryptocurrency. The platform has its own blockchain and a native coin known as CELO.
 
 Now that you already know the basics of the blockchain, Solidity, and Celo, let's proceed to build a Tip System using Solidity smart contract.
 
 ## Writing the Smart Contract
 
-### What Problem is Our Code Solving?
+### What Problem Is Our Code Solving?
 We are building a system that allows organizations to properly manage the tips offered to staff members by making it more transparent and open to all.
 Our smart contract will be able to do the following:
 
@@ -547,12 +547,12 @@ We will add one last special function called a `fallback` function. This functio
 After completing the contract code, the next step is to deploy the smart contract to the blockchain so that we can interact with it. We will be deploying it to the Celo blockchain from Remix.
 
 ### Why Are We Deploying It to the Celo Blockchain?
-- Celo blockchain is secured
-- It is scalable
-- It is interoperable i.e you can communicate with other blockchains
+- The Celo blockchain is secured.
+- It is scalable.
+- It is interoperable i.e you can communicate with other blockchains.
 - It is easy to use.
 
-### Using Remix
+### Using Remix to Deploy the Smart Contract
 Remix IDE, is a no-setup tool with a GUI for developing smart contracts. Used by experts and beginners alike, Remix will get you going in double time. Remix plays well with other tools, and allows for a simple deployment process to the chain of your choice. Remix is famous for its visual debugger.
 
 #### Write and Compile Code
