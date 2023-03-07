@@ -1,43 +1,45 @@
+# How to Build a Tipping System on the Celo Blockchain
+
 ## Introduction 
-Hello there, welcome to my tutorial where we will be learning about blockchain technology step by step. But before we proceed further, let me ask you this simple question:
+Hello there, welcome to my tutorial where we will be learning about creating a tipping system using blockchain technologies step by step. But before we proceed further, let me ask you this simple question:
 
-> _Have you ever gone to a restaurant where the staffs get's their salary bonus from tips?_
+> _Have you ever gone to a restaurant where the staffs get their salary bonus from tips?_
 
-A tip is considered a monetary incentive which is given by the customer or guest for polite, prompt, and efficient service provided by by a restaurant or a hotel staff. Tipping a staff is usually not mandatory but it is necessary to appreciate the service provided by a staff.
+A tip is considered a monetary incentive that is given by the customer or guest for polite, prompt, and efficient service provided by a restaurant or hotel staff. Tipping staff is usually not mandatory but it is necessary to appreciate the service provided by staff.
 
-A tipping system can be made better by using a blockchain technology to implement a solution that is transparent and accessible to everyone in the whole world.
+A tipping system can be made better by using blockchain technology to implement a solution that is transparent and accessible to everyone.
 
-For this tutorial, we want to build a tipping system on the Celo blockchain using a smart contract programming language called solidity. But before we start building, let's know what the above terminologies mean.
+For this tutorial, we want to build a tipping system on the Celo blockchain using a smart contract programming language called Solidity. But before we start building, let's know what the above terminologies mean.
 
-### What is the blockchain?
-The blockchain is a shared, immutable ledger that facilitates the process of recording transactions and tracking assets in a business network. An asset can be tangible (a house, car, cash, land) or intangible (intellectual property, patents, copyrights, branding). Virtually anything of value can be tracked and traded on a blockchain network, reducing risk and cutting costs for all involved. 
+### What is the Blockchain?
+The blockchain is a shared, immutable ledger that facilitates the process of recording transactions and tracking assets in a business network. An asset can be **tangible** (a house, car, cash, land) or **intangible** (intellectual property, patents, copyrights, branding). Virtually anything of value can be tracked and traded on a blockchain network, reducing risk and cutting costs for all involved. 
 
 
 ### What is Solidity?
 With the mention that Ethereum can be used to write smart contracts, we tend to corner our minds to the fact that there must be some programming language with which these applications are designed.
-Yes, there is a programming language that makes it possible. It goes by the name ‘Solidity’.
+Yes, there is a programming language that makes it possible. It goes by the name of ‘**Solidity**’.
 
-Solidity is an object-oriented programming language which was developed by the core contributors of the Ethereum platform. It is used to design and implement smart contracts within the Ethereum Virtual Platform and several other Blockchain platforms like the Celo blockchain.
+Solidity is an object-oriented and statically-typed programming language that was developed by the core contributors of the Ethereum platform. It is used to design and implement smart contracts that implement self-enforcing business logic within the Ethereum Virtual Machine and several other  EVM-compatible blockchain platforms like the Celo blockchain.
 
-Solidity is a statically-typed programming language designed for developing smart contracts that run on the Ethereum Virtual Machine. With this language, developers can write applications that implement self-enforcing business logic embodied in smart contracts, leaving an authoritative record of transactions.
 
 ### What is the Celo blockchain?
-Celo is the carbon-negative, mobile-first, EVM-compatible blockchain ecosystem leading a thriving new digital economy for all. Celo blockchain is a platform designed to allow mobile users around the world to make simple financial transactions with cryptocurrency. The platform has its own blockchain and a native coin known as CElO.
+Celo is the carbon-negative, mobile-first, EVM-compatible blockchain ecosystem leading a thriving new digital economy for all. The Celo blockchain is an ecosystem designed to allow mobile users around the world to make simple financial transactions with cryptocurrency. The platform has its own blockchain and a native coin known as CELO.
 
 Now that you already know the basics of the blockchain, Solidity, and Celo, let's proceed to build a Tip System using Solidity smart contract.
 
-## Writing the smart contract
-### What problem is our code solving?
+## Writing the Smart Contract
+
+### What Problem is Our Code Solving?
 We are building a system that allows organizations to properly manage the tips offered to staff members by making it more transparent and open to all.
 Our smart contract will be able to do the following:
 
-- Let staffs of a particular organization go to the system and register themselves. We will not be collecting personal information like date of birth or email address from staff members. We will only collect general information like staff name, short description of staff, and profile picture. 
-- Let admin verify the account of registered staffs so they can use the account to collect tips from customers.
-- Let customers pay tip to this accounts created by staff members.
+- Let the staff of a particular organization go to the system and register themselves. We will not be collecting personal information like date of birth or email address from staff members. We will only collect general information like staff names, short descriptions, and profile pictures. 
+- Let admin verify the account of registered staff so they can use the account to collect tips from customers.
+- Let customers pay a tip to these accounts created by staff members.
 - Let staff withdraw their funds from the account into their own wallet after a period of time.
-- Let admin remove any staff that behaves malicously or is no longer part of the organization.
+- Let admin remove any staff that behaves maliciously or is no longer part of the organization.
 
-### Smart contract code
+### Smart Contract Code
 Below is the Solidity smart contract code for our tipping system.
 
 ```solidity
@@ -51,7 +53,6 @@ contract TipContract {
         string aboutStaff;
         string profilePic;
         bool verified;
-        bool disabled;
         uint256 amountDeposited;
         uint256 lastCashout;
     }
@@ -131,7 +132,6 @@ contract TipContract {
         purse.aboutStaff = _about_staff;
         purse.profilePic = _staff_profile_pic;
         purse.verified = false;
-        purse.disabled = false;
         purse.amountDeposited = 0;
         purse.lastCashout = block.timestamp;
 
@@ -156,8 +156,7 @@ contract TipContract {
     {
         Purse storage purse = purses[_purse_id];
         require(purse.staffId != msg.sender, "Can't deposit into own purse");
-        require(purse.verified, "Can't deposit into an unverified purse");
-        require(!purse.disabled, "Can't deposit into a disabled purse");
+        require(canAcceptFunds(_purse_id), "Can't deposit into an unverified or invalid purse");
 
         purse.amountDeposited += msg.value;
         Deposit storage deposit = deposits[depositsCounter++];
@@ -169,7 +168,6 @@ contract TipContract {
 
     // Cash out all funds stored in purse
     function cashOut(uint256 _purse_id) public {
-        require(isStaff[msg.sender], "Only verified staffs can cashout");
         require(
             purses[_purse_id].staffId == msg.sender,
             "Can't cashout purse because you are not the owner"
@@ -178,6 +176,7 @@ contract TipContract {
             purses[_purse_id].lastCashout + cashoutInterval <= block.timestamp,
             "Not yet time for cashout"
         );
+        require(purses[_purse_id].amountDeposited > 0, "No balance to cash out.");
         Purse storage purse = purses[_purse_id];
         uint256 amount = purse.amountDeposited;
         purse.amountDeposited = 0; // reset state variables before sending funds
@@ -194,10 +193,10 @@ contract TipContract {
         returns (bool)
     {
         Purse memory purse = purses[_purse_id];
-        return purse.verified && (purse.disabled == false);
+        return purse.verified && (isStaff[purse.staffId]);
     }
 
-    // Read details about purse. Only deployer and purse owne can access
+    // Read details about purse. Only deployer and purse owner can access
     function readPurse(uint256 _purse_id)
         public
         view
@@ -207,7 +206,6 @@ contract TipContract {
             string memory aboutStaff,
             string memory profilePic,
             bool verified,
-            bool disabled,
             uint256 amountDeposited,
             uint256 lastCashout
         )
@@ -221,12 +219,10 @@ contract TipContract {
         aboutStaff = purse.aboutStaff;
         profilePic = purse.profilePic;
         verified = purse.verified;
-        disabled = purse.disabled;
         amountDeposited = purse.amountDeposited;
         lastCashout = purse.lastCashout;
     }
 
-    // Do nothing if any function is wrongly called
     fallback() external {
         revert();
     }
@@ -240,13 +236,13 @@ We will now break down the smart contract code into small snippets and explain t
 pragma solidity ^0.8.0;
 ```
 
-The first two lines of our code we specified the license that our code is guided by. This license is a very important aspect of our solidity smart contract. Without the license, our solidity code will not compile. Before we go further, let me give you short story of why solidity requires that we add this licens file to our smart contract code.
+In the first two lines of our code, we specified the license that our code is guided by. This license is a very important aspect of our solidity smart contract. Without the license, our solidity code will not compile. Before we go further, let me give you a short story of why Solidity requires that we add this license file to our smart contract code.
 
-> _In the early days of smart contract development where all the projects were required to make thier project's code opensource. Many companies abide by this law and uploaded all their code to opensource platforms like Github for the whole world to see and verify that the code does what they told you. But it didn't take long before some geeks started taking advantage of this move. A typical example is the Uniswap protocol. People discovered that Uniswap is making a lot of money, so they decided to clone Uniswap code and build their own version of Uniswap thereby creating a competition for Uniswap. I won't mention names but you probably heard of projects like Pancakeswap, Sushiswap, etc_
+> _In the early days of smart contract development where all the projects were required to make their project code open source. Many companies abide by this law and uploaded all their code to open-source platforms like Github for the whole world to see and verify that the code does what they told you. But it didn't take long before some geeks started taking advantage of this move. A typical example is the Uniswap protocol. People discovered that Uniswap is making a lot of money, so they decided to clone Uniswap code and build their own version of Uniswap thereby creating competition for Uniswap. I won't mention names but you probably heard of projects like Pancakeswap, Sushiswap, etc_
 
-Don't take the above story too formal. It's just a fun way of explaining why you need to add license to your smart contract code. You can do your own research to find out about the real story. Now back to code!
+Don't take the above story too formally. It's just a fun way of explaining why you need to add a license to your smart contract code. You can do your own research to find out about the real story. Now back to code!
 
-In the second line, we declared the version of compiler our code should work on. In this case, any compiler betweeen 0.8.0 to 0.8.0. You see, Solidity is a pretty new language whose formal version came out around 2018. So the language is still going through rapid changes and upgrade that is why you need to specify a range of version. You can still instruct your smart contract to use only oneversion though. Simply remove the caret sign (^) and your code will only compile on version 0.8.0 only.
+In the second line, we declared the version of the compiler our code should work on. In this case, any compiler between version `0.8.0` and less than version `0.9.0`. You see, Solidity is a pretty new language whose formal version came out around 2018. So the language is still going through rapid changes and upgrades which is why you need to specify a range of versions. You can still instruct your smart contract to use only one version though. Simply remove the caret sign (^) and your code will only compile on version `0.8.0` only.
 
 ```solidity
     struct Purse {
@@ -255,7 +251,6 @@ In the second line, we declared the version of compiler our code should work on.
         string aboutStaff;
         string profilePic;
         bool verified;
-        bool disabled;
         uint256 amountDeposited;
         uint256 lastCashout;
     }
@@ -268,9 +263,9 @@ In the second line, we declared the version of compiler our code should work on.
     }
 ```
 
-Inside the body of the contract, two structs were created. `Purse` and `Deposit`. Struct is a data type that solidity provides for us to store.a group of variables which are related. Using structs data type makes our code cleaner and easy to read. Structs are created with the keyword `struct` followed by the name we wish to give the struct. By convention, we are expected to format the struct name is title case.
+Inside the body of the contract, two structs were created. `Purse` and `Deposit`. A [struct](https://docs.soliditylang.org/en/v0.8.14/structure-of-a-contract.html#struct-types) is a data type that Solidity provides for us to store a group of variables that are related. Using the `struct` data type makes our code cleaner and easy to read. Structs are created with the keyword `struct` followed by the name we wish to give the struct. By convention, we are expected to format the struct name in the **CapWords** style.
 
-`Purse` struct from our code holds information related to a purse. Our application will allow staffs to create purses (more like account) which they can use to receive tip paid by customers. `Deposit` struct also holds imformation relatedto a deposit made by a customer. It holds iformation like the purse Id it made deposit to, the address of customer making the deposit, how they felt about the service, and the amount deposited.
+The `Purse` struct from our code holds information related to a purse. Our application will allow staff to create purses (more like accounts) which they can use to receive tips paid by customers. The `Deposit` struct also holds information related to a deposit made by a customer. It holds information like the purse `Id` to deposit to, the address of the customer making the deposit, how they felt about the service, and the amount deposited.
 
 ```solidity
     address payable deployer;
@@ -285,12 +280,13 @@ Inside the body of the contract, two structs were created. `Purse` and `Deposit`
     uint256 cashoutInterval = 30 days;
 ```
 
-After creating the structs that will be used to group data together, the next thing we did was to create variables that will hold these data for us.
-For the code above, we first created a variable - `deployer`, which will hold the address of whoever deployed the contract. This account will have adminstrative privilledges over the contract. When then created two mappings - `isStaff` and `hasCreated`. Is staff mapping maps address to a boolean value (true or false). If an address is a set as a staff, it sets the value to true. The default value is false. Has created mapping is also very similar to is staff mapping but the difference is that, has created sets the value of an address key to true if the staff has already created a wallet before. it's purpose is to prevent staffs from creating multiple wallets.
+After creating the structs that will be used to group data together, the next thing we did was create variables that will hold these data for us.
+For the code above, we first created a variable - `deployer`, which will hold the address of whoever deployed the contract. This account will have administrative privileges over the contract. We then created two mappings - `isStaff` and `hasCreated`. The `isStaff` mapping maps addresses to boolean values (true or false). If an address is set as a staff, it sets the value to *true*. The default value is *false*. The `hasCreated` mapping is also very similar to the `isStaff` mapping but the difference is that, `hasCreated` sets the value of an address key to *true* if the staff has already created a wallet before. Its purpose is to prevent staff from creating multiple wallets.
 
-We also created two other mappings - `purses` and `deposites`. Purses mapping maps an id to a purse data (Remember the `Purse` struct we created earlier). So each purse created has a uniq id it can be queried with. The deposits mapping is also similar to the purse mapping. The only difference is that is keeps track of all deposite made by the customers and it maps a uint to a deposit type.
+We also created two other mappings - `purses` and `deposits`. The `purses` mapping maps an ID to a `purse` data (Remember the `Purse` struct we created earlier). So each purse created has a unique ID it can be queried with. The `deposits` mapping is also similar to the `purses` mapping. The only difference is that it keeps track of all deposits made by the customers and it maps a `uint` to a `deposit` type.
 
-We then created 3 more variables - `id`, `depositsCounter`, and `cashOutInterval`. id is the variable that assigns id to all purses created (remember that purses mapping maps and id to a purse). depositsCounter is the variable that keeps track of the total deposits made. It can use used to query for all the deposits made to the contract. Notice the difference between the id and depositCoutner variable? I did that intentionally to show you the concept of default values. The value of depositCounter is initialized to zero by default, so we can omit the zero asignmenent to id and everything will still work fine. We also have a variable to keep track of the interval between when a staff can made a withdrawal. We are using 30 days here to simulate the salary system. Solidity offers suffixes like minutes, hours, days, etc that you can use in your code directly. All of them evaluates to seconds. Refer to the list below to see the full list.
+We then created 3 more variables - `id`, `depositsCounter`, and `cashOutInterval`. The `id` variable assigns an ID to all purses created (remember that `purses` mapping maps an ID to a `purse`). `depositsCounter` is the variable that keeps track of the total deposits made. It can use used to query all the deposits made to the contract. Notice the difference between the `id` and `depositCounter` variables? I did that intentionally to show you the concept of default values. The value of `depositCounter` is initialized to zero by default, so we can omit the zero assignment to `id` and everything will still work fine. We also have a variable to keep track of the interval between when staff can make a withdrawal. We are using 30 days here to simulate the salary system. Solidity offers suffixes like minutes, hours, days, etc that you can use in your code directly. All of them evaluates in seconds. Refer to the list below to see the full list.
+
 
 
 - `1 == 1 seconds`
@@ -305,7 +301,7 @@ We then created 3 more variables - `id`, `depositsCounter`, and `cashOutInterval
     }
 ```
 
-The first function inside the body of our contract is the contructor function. We created the constructor functon to set the deployer to the function caller. This function caller will inturn be have admin priveledges over the contract.
+The first function inside the body of our contract is the constructor function. We created the constructor function to set the deployer to the function caller. This function caller will in turn have admin privileges over the contract.
 
 ```solidity
    modifier onlyDeployer() {
@@ -321,14 +317,14 @@ The first function inside the body of our contract is the contructor function. W
         _;
     }
 ```
-Two modifiers are then created - `onlyDeployer` and `idIsValid`. onlyDeployer checks that the address calling a function is the deployer of the contract (i.e admin), if the caller is not the admin, it throws an error with message description. idIsValid takes in the id o fa purse and check if it is a valid id, an dthrows an error with a message descriptino otherwise.
+Two modifiers are then created - `onlyDeployer` and `idIsValid`. `onlyDeployer` checks that the address calling a function is the deployer of the contract (i.e admin), if the caller is not the admin, it throws an error with a message description. `idIsValid` takes in the ID of a purse and checks if it is a valid ID, and throws an error with a message description if the ID isn't valid.
 
 ```solidity
     event AddStaff(address indexed);
     event RemoveStaff(address indexed);
 ```
 
-Two events are also created - `AddStaff()` and `RemoveStaff`. These event are emitted and stored on the blockchain when a staff is is added and removed from the contract respectively.
+Two events are also created - `AddStaff()` and `RemoveStaff`. These events are emitted and stored on the blockchain when staff is added and removed from the contract respectively.
 
 Now we will be going through the functions in the contract one after the other.
 
@@ -344,10 +340,10 @@ Now we will be going through the functions in the contract one after the other.
     }
 ```
 
-- This function above will take in a variable `_staff_address` 
-- It is a public function and can only be called by the contract deployer (the admin)
-- The first line inside the function first confirms if the staff address we want to add is vald, else throws an error with a message description
-- It then proceed to save the staff in storage
+- This function above will take in a parameter`_staff_address` 
+- It is a `public` function and can only be called by the contract deployer (the admin)
+- The first line inside the function first confirms if the staff address we want to add is valid, else throws an error with a message description
+- It then proceeds to save the staff in storage
 - Lastly, it emits an event to indicate a staff has been added to the blockchain
 
 ```solidity
@@ -361,12 +357,12 @@ Now we will be going through the functions in the contract one after the other.
         emit RemoveStaff(_staff_address);
     }
 ```
-- This function above removes a staff from the system
-- It takes in a `address` parameter called `_staff_address` 
-- It is public and can only be called bt the contract deployer
-- It first checks if the address entered is valid, before proceeding, else it reverts the transaction
-- if then removes staff from storage
-- it tnen emit event indicating staff has been removed
+- This function above removes staff from the system
+- It takes in an `address` parameter called `_staff_address` 
+- It is `public` and can only be called by the contract deployer
+- It first checks if the address entered is *valid*, before proceeding, else it reverts the transaction with an error message
+- If then removes staff from storage
+- It then emits an event indicating staff has been removed
 
 ```solidity
     // Staff members can create new purse
@@ -386,16 +382,15 @@ Now we will be going through the functions in the contract one after the other.
         purse.aboutStaff = _about_staff;
         purse.profilePic = _staff_profile_pic;
         purse.verified = false;
-        purse.disabled = false;
         purse.amountDeposited = 0;
         purse.lastCashout = block.timestamp;
 
         hasCreated[msg.sender] = true;
     }
 ```
-- The function above takes in three arguments - `_staff_name`, `_about_staff`, and `_about_staff`
-- It firsts of all validates that address creating new purse is a staff and has not created any purse before.
-- It then proceeds to create a new purse with the arguments entered into the function and the default values.
+- The function above takes in three parameters - `_staff_name`, `_about_staff`, and `_staff_profile_pic`
+- It, first of all, validates that the sender calling the function is a staff and has not created any purse before.
+- It then proceeds to create a new purse with the arguments passed into the function and the default values.
 
 ```solidity
     // Verify purse created by staffs
@@ -408,9 +403,9 @@ Now we will be going through the functions in the contract one after the other.
         purses[_purse_id].verified = true;
     }
 ```
-- This function above verifies a purse
+- The function above verifies a purse
 - It can only be called by the admin
-- if first validates that the purse is owned by a staff member, before going ahead to set its verified property to `true`
+- It first validates that the purse is owned by a staff member, before going ahead to set its verified property to `true`
 
 ```solidity
     // Customer deposits amount into purse
@@ -421,8 +416,7 @@ Now we will be going through the functions in the contract one after the other.
     {
         Purse storage purse = purses[_purse_id];
         require(purse.staffId != msg.sender, "Can't deposit into own purse");
-        require(purse.verified, "Can't deposit into an unverified purse");
-        require(!purse.disabled, "Can't deposit into a disabled purse");
+        require(canAcceptFunds(_purse_id), "Can't deposit into an unverified or invalid purse");
 
         purse.amountDeposited += msg.value;
         Deposit storage deposit = deposits[depositsCounter++];
@@ -433,14 +427,17 @@ Now we will be going through the functions in the contract one after the other.
     }
 ```
 - This function above is called by a customer to deposit funds into a purse along with a message.
-- The function has a modifier - `payable`, which means it can asset coins
-- The function first validats the inputs before updating the user purse with amount sent along with the transaction
-- The funds sent is stored in the contract
+- The function has a modifier - `payable` which means that the function can receive CELO tokens.
+- The function first checks if the argument sent for `_purse_id` is valid.
+- It then checks if the sender is not the purse's owner.
+- Finally, the function checks if the purse can receive tips by calling the **canAcceptFunds()** function that returns a boolean value inside a *require* statement
+- If all the checks have passed, the function then adds the `msg.value` to the `purse`'s `amountDeposited` property, creates a `deposit` object, and stores it in the state.
+
+Next up is the `cashOut()` function:
 
 ```solidity
     // Cash out all funds stored in purse
     function cashOut(uint256 _purse_id) public {
-        require(isStaff[msg.sender], "Only verified staffs can cashout");
         require(
             purses[_purse_id].staffId == msg.sender,
             "Can't cashout purse because you are not the owner"
@@ -449,6 +446,7 @@ Now we will be going through the functions in the contract one after the other.
             purses[_purse_id].lastCashout + cashoutInterval <= block.timestamp,
             "Not yet time for cashout"
         );
+        require(purses[_purse_id].amountDeposited > 0, "No balance to cash out.");
         Purse storage purse = purses[_purse_id];
         uint256 amount = purse.amountDeposited;
         purse.amountDeposited = 0; // reset state variables before sending funds
@@ -457,10 +455,37 @@ Now we will be going through the functions in the contract one after the other.
         require(sent, "Failed to cashout amount to staff wallet");
     }
 ```
-- Staffs call this function to withdraw their funds from this contract
-- The function has a lot of similarities with the previous functions but one thing to note is the use of a low level function called `call()`. We used this function to transfer CELO to which ever address we called the function on (either contract address or wallet address). Be careful while using this function as things may go wrong.
+- Staff can call this function to withdraw their tips stored in their respective purse in the smart contract.
+- The function first checks if the `sender` is the owner of the purse.
+- It then checks if enough time has passed since the last cash out and whether the purse's `amountDeposited` is greater than zero.
+- Finally, if all the checks have passed, the `amountDeposited` is fetched from storage and then updated before we use the `.call()` method which is a low-level function to send the CELO to the purse's owner. Since the `.call()` method does not automatically revert the transaction during failure, we perform a check to ensure that the transfer has been successful.
+
+
+We will now create the `canAcceptFunds()` function:
 
 ```solidity
+    // Check if purse can accept funds before sending
+    function canAcceptFunds(uint256 _purse_id)
+        public
+        view
+        idIsValid(_purse_id)
+        returns (bool)
+    {
+        Purse memory purse = purses[_purse_id];
+        return purse.verified && (isStaff[purse.staffId]);
+    }
+
+```
+
+- The `canAcceptFunds()` function takes in a `_purse_id` as a parameter that refers to a purse ID.
+- The function first checks if the purse ID provided is valid
+- If it is, the function returns a `boolean` value that is calculated based on the `verified` property of the purse and the `isStaff` value of the purse's owner. The function returns **true** if both values are **true**, otherwise, if any of the values are **false**, **false** is returned. 
+
+
+Next, we will define the `readPurse()` function:
+
+```solidity
+    // Read details about purse. Only deployer and purse owner can access
     function readPurse(uint256 _purse_id)
         public
         view
@@ -470,7 +495,6 @@ Now we will be going through the functions in the contract one after the other.
             string memory aboutStaff,
             string memory profilePic,
             bool verified,
-            bool disabled,
             uint256 amountDeposited,
             uint256 lastCashout
         )
@@ -484,17 +508,15 @@ Now we will be going through the functions in the contract one after the other.
         aboutStaff = purse.aboutStaff;
         profilePic = purse.profilePic;
         verified = purse.verified;
-        disabled = purse.disabled;
         amountDeposited = purse.amountDeposited;
         lastCashout = purse.lastCashout;
     }
 ```
-This function above is also similar to the functions defined earlier. it simply takes in a purse id and returns all the details about that purse.
+The function above takes a `_purse_id` as a parameter and returns all the details about that purse and can only be successfully used by the admin or owner of the purse.
 
-We added one last special function called a callback function. This function is executed when we call a function that does not exist in our contract, or sent some funds to the contract. In the case of our function, it will revert any of the trasaction. Below is how the function look like:
+We will add one last special function called a `fallback` function. This function is executed if none of the other functions match the function identifier or no data was provided with the function call or sent some plain funds without any data to the contract. In the case of our function, it will revert any of the transactions. Below is what the function looks like:
 
 ```solidity
-  // Do nothing if any function is wrongly called
     fallback() external {
         revert();
     }
